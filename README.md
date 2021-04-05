@@ -1,6 +1,6 @@
 # Project5
 
-compile firstNode.c: cc -std=c99 firstNode.c -o firstNode//
+compile firstNode.c: cc -std=c99 firstNode.c -o firstNode "\n"
 compile node.c     : cc node.c -o node
 
 Start program by opening up a window and executing ./firstNode
