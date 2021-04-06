@@ -12,3 +12,5 @@ Open up 5 more windows and execute ./node
 **Note: If you run ./firstNode or ./node and the binding fails, Control+C and re-run the program**
 
 Connect each program by entering the neighbors port number which will display when each program is ran
+
+**Note: Make sure to have 6 total processes, otherwise error message will print and program(s) exit**
