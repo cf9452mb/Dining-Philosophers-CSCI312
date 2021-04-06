@@ -1,10 +1,11 @@
 //This program is to represent each node in the ring
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "shared.h"
 
 int main(int argc, char const *argv[]){
@@ -28,7 +29,7 @@ int main(int argc, char const *argv[]){
   //Create a pipe for communication between the child and parent
   if(pipe(pipe1) < 0){
     printf("Error on pipe creation: %d\n", errno);
-    exit(1);
+    exit(0);
   }
 
   pid = fork();
@@ -52,18 +53,18 @@ int main(int argc, char const *argv[]){
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0)
       {
         perror("bind failed");
-        exit(EXIT_FAILURE);
+        exit(1);
       }
     if (listen(server_fd, 3) < 0)
       {
         perror("listen");
-        exit(EXIT_FAILURE);
+        exit(2);
       }
 
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
       {
         perror("accept");
-        exit(EXIT_FAILURE);
+        exit(3);
       }
 
     //Receive the Election message and send to parent so this node's ID can get added to the message
@@ -73,6 +74,9 @@ int main(int argc, char const *argv[]){
       //Receive the Coordinator message
       recv( new_socket , &msg1, sizeof(msg1), 0);
       write(pipe1[1], &msg1, sizeof(msg1));
+
+      //Close the socket
+      close(new_socket);
   }
   else{
     int neighborSock = 0;
@@ -101,8 +105,8 @@ int main(int argc, char const *argv[]){
 
     if (connect(neighborSock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
       {
-        printf("\nConnection Failed \n");
-        return -1;
+        perror("\nConnection Failed \n");
+        exit(4);
       }
 
     //Send the Election message to the next node in the ring
@@ -116,8 +120,28 @@ int main(int argc, char const *argv[]){
     //This variable contains the ID of the Coordinator
     int max = atoi(msg2.buffer);
 
-    //This is where I would fork and execl either diningPhilosophers or coordinator program
+    //Check to make sure there are 6 total processes, if not exit program
+    if(msg2.values != 6){
+      printf("invalid number of processes!\n");
+      exit(5);
+    }
 
+    //Fork here and execl either ./diningPhilosophers or ./coordinator program
+    int pid1 = fork();
+
+    if(pid1 == 0){
+      if(msg.id == max){
+        startCoordinator(msg2, msg.port);
+      }
+      else{
+
+      }
+    }
+
+    else{
+      int returnStatus;
+      waitpid(pid1, &returnStatus, 0);
+    }
 
   return 0;
   }
