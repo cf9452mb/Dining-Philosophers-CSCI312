@@ -66,9 +66,11 @@ int main(int argc, char const *argv[]){
         exit(EXIT_FAILURE);
       }
 
+    //Receive the Election message and send to parent so this node's ID can get added to the message
       recv( new_socket , &msg1, sizeof(msg1), 0);
       write(pipe1[1], &msg1, sizeof(msg1));
 
+      //Receive the Coordinator message
       recv( new_socket , &msg1, sizeof(msg1), 0);
       write(pipe1[1], &msg1, sizeof(msg1));
   }
@@ -79,10 +81,12 @@ int main(int argc, char const *argv[]){
 
     close(pipe1[1]);
 
+    //Read the Election message coming in from neighboring node
     read(pipe1[0], &msg2, sizeof(msg2));
     printf("E(%s)\n",msg2.buffer);
-    strcat(msg2.buffer, msg.buffer);
 
+    //Add this nodes ID to the Election message
+    strcat(msg2.buffer, msg.buffer);
     msg2.list[msg2.values] = msg.id;
     msg2.values = msg2.values + 1;
 
@@ -101,13 +105,18 @@ int main(int argc, char const *argv[]){
         return -1;
       }
 
+    //Send the Election message to the next node in the ring
     send(neighborSock , &msg2 , sizeof(msg) , 0 );
 
+    //Read the Coordinator message and pass it along to next node in the ring
     read(pipe1[0], &msg2, sizeof(msg2));
     printf("C(%s)\n", msg2.buffer);
     send(neighborSock , &msg2 , sizeof(msg) , 0 );
 
+    //This variable contains the ID of the Coordinator
     int max = atoi(msg2.buffer);
+
+    //This is where I would fork and execl either diningPhilosophers or coordinator program
 
 
   return 0;
