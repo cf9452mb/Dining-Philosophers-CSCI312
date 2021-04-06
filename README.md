@@ -4,6 +4,8 @@ compile firstNode.c: cc -std=c99 firstNode.c -o firstNode
 
 compile node.c     : cc node.c -o node
 
+compile coordinator.c:  cc coordinator.c -o coordinator
+
 
 Start program by opening up a window and executing ./firstNode
 
