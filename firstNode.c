@@ -1,4 +1,5 @@
-//This program is for the First node in the ring
+//This program is for the First node in the ring, this node will send the initial Election message
+//to the other nodes and send a Coordinator message once the highest ID has been determined.
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -102,21 +103,23 @@ int main(int argc, char const *argv[]){
         return -1;
       }
 
-
+    //Send the initial Election message and wait for it to circle back around
     send(neighborSock , &msg , sizeof(msg) , 0 );
     read(pipe1[0], &msg2, sizeof(msg2));
     printf("E(%s)\n", msg2.buffer);
 
+    //Determine the largest ID of the nodes in the ring
     int max = largest(msg2.list, msg2.values);
     printf("Largest ID = %d\n", max);
 
+    //Print the largest ID to the buffer and send the Coordinator message to the other nodes
     sprintf(msg2.buffer, "%d", max);
     send(neighborSock, &msg2, sizeof(msg2), 0);
 
     read(pipe1[0], &msg2, sizeof(msg2));
 
 
-    //Fork here and execl either dininingPhilosphers or coordinator
+    //Fork here and execl either dininingPhilosphers or coordinator program
 
 
 
