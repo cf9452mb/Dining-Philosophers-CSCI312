@@ -45,7 +45,7 @@ void startCoordinator(struct message msg, int value){
   sprintf(fourth, "%d", msg.list[3]);
   sprintf(fifth, "%d", msg.list[4]);
   sprintf(sixth, "%d", msg.list[5]);
-  sprintf(port, "%d", (value + 6));
+  sprintf(port, "%d", (value + 1000));  //Add 1000 to the port to make sure its unique
 
   execl("./coordinator", "coordinator", first, second, third, fourth, fifth, sixth, port, (char *)NULL);
 
