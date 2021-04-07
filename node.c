@@ -130,14 +130,17 @@ int main(int argc, char const *argv[]){
     int pid1 = fork();
 
     if(pid1 == 0){
+      //If the processes ID is the max, start up Coordinator process
       if(msg.id == max){
-        startCoordinator(msg2, msg.port);
+        startCoordinator(msg2, msg, msg.port);
       }
+      //Else start up Philosopher process
       else{
-
+        startPhilosopher(msg, max);
       }
     }
 
+    //Parent process waits for child to complete
     else{
       int returnStatus;
       waitpid(pid1, &returnStatus, 0);
