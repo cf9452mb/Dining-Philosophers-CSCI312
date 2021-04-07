@@ -6,26 +6,28 @@
 
 int main(int argc, char *argv[]){
 
-  int first, second, third, fourth, fifth, sixth, port;
+  int first, second, third, fourth, fifth, sixth, id, port;
 
-  //Extract all of the values in the Node ring
+  //Extract all of the values in the Node ring, this is the order they are in
   first = atoi(argv[1]);
   second = atoi(argv[2]);
   third = atoi(argv[3]);
   fourth = atoi(argv[4]);
   fifth = atoi(argv[5]);
   sixth = atoi(argv[6]);
-  port = atoi(argv[7]);
+  id = atoi(argv[7]);
+  port = atoi(argv[8]);
 
   printf("I am the Coordinator\n");
-
+  printf("My ID is = %d\n", id);
   printf("My port number is = %d\n", port);
-  printf("value = %d\n", first);
-  printf("value = %d\n", second);
-  printf("value = %d\n", third);
-  printf("value = %d\n", fourth);
-  printf("value = %d\n", fifth);
-  printf("value = %d\n", sixth);
+  printf("The processes are in this order:\n");
+  printf("%d\n", first);
+  printf("%d\n", second);
+  printf("%d\n", third);
+  printf("%d\n", fourth);
+  printf("%d\n", fifth);
+  printf("%d\n", sixth);
 
   //Code to create the socket connection to communicate with the Philosophers
   /*
