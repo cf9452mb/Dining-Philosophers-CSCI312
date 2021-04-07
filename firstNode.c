@@ -122,7 +122,7 @@ int main(int argc, char const *argv[]){
     read(pipe1[0], &msg2, sizeof(msg2));
 
     //Check to make sure there are 6 total processes, if not exit program
-    if(msg2.values != 6){
+    if(msg2.values != (N+1)){
       printf("Invalid number of processes!\n");
       exit(5);
     }
@@ -131,14 +131,17 @@ int main(int argc, char const *argv[]){
     int pid1 = fork();
 
     if(pid1 == 0){
+      //If the processes ID is the max, start up Coordinator process
       if(msg.id == max){
-        startCoordinator(msg2, msg.port);
+        startCoordinator(msg2, msg, msg.port);
       }
+      //Else start up Philosopher process
       else{
-
+        startPhilosopher(msg, max);
       }
     }
 
+    //Parent process waits for child to complete
     else{
       int returnStatus;
       waitpid(pid1, &returnStatus, 0);
@@ -147,21 +150,4 @@ int main(int argc, char const *argv[]){
 
     return 0;
   }
-}
-
-//Function to return the largest element in the arr[] array
-int largest(int arr[], int size)
-{
-  int i;
-
-  // Initialize maximum element
-  int max = arr[0];
-
-  // Traverse array elements from second and
-  // compare every element with current max
-  for (i = 1; i < size; i++)
-    if (arr[i] > max)
-      max = arr[i];
-
-  return max;
 }
