@@ -6,6 +6,8 @@ compile node.c     : cc node.c -o node
 
 compile coordinator.c:  cc coordinator.c -o coordinator
 
+compile diningPhilosophers.c:  cc diningPhilosophers.c -o diningPhilosophers
+
 
 Start program by opening up a window and executing ./firstNode
 
