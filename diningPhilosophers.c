@@ -1,5 +1,4 @@
 //This is the program that each dining philosopher runs. It communicates directly with the Coordinator via a socket
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "shared.h"
