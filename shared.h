@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #define N 5  //Number of philosophers
 
@@ -32,6 +33,28 @@ int largest(int arr[], int size){
       max = arr[i];
 
   return max;
+}
+
+//Function to delete an element from an array
+int deleteElement(int arr[], int n, int x)
+{
+  // Search x in array
+  int i;
+  for (i=0; i<n; i++)
+    if (arr[i] == x)
+      break;
+
+  // If x found in array
+  if (i < n)
+    {
+      // reduce size of array and move all
+      // elements on space ahead
+      n = n - 1;
+      for (int j=i; j<n; j++)
+        arr[j] = arr[j+1];
+    }
+
+  return n;
 }
 
 //Create a socket
@@ -62,7 +85,10 @@ void startCoordinator(struct message msg, struct message msgID, int value){
   sprintf(id, "%d", msgID.id);
   sprintf(port, "%d", (value + 1000));  //Add 1000 to the port to make sure its unique
 
-  execl("./coordinator", "coordinator", first, second, third, fourth, fifth, sixth, id, port, (char *)NULL);
+  if(execl("./coordinator", "coordinator", first, second, third, fourth, fifth, sixth, id, port, (char *)NULL) < 0){
+    perror("Error on execl of ./coordinator");
+    exit(EXIT_FAILURE);
+  }
 
 }
 
@@ -73,7 +99,10 @@ void startPhilosopher(struct message msg, int value){
   sprintf(id, "%d", msg.id);
   sprintf(port, "%d", (value + 2024));  //Add 2024 to match the Coordinator's port
 
-  execl("./diningPhilosophers", "diningPhilosophers", id, port, (char *)NULL);
+  if(execl("./diningPhilosophers", "diningPhilosophers", id, port, (char *)NULL) < 0){
+    perror("Error on execl of ./diningPhilosophers");
+    exit(EXIT_FAILURE);
+  }
 
 }
 
