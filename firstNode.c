@@ -112,14 +112,16 @@ int main(int argc, char const *argv[]){
     read(pipe1[0], &msg2, sizeof(msg2));
     printf("E(%s)\n", msg2.buffer);
 
+    //Send the Coordinator message around the ring and wait for it to circle back around
+    send(neighborSock, &msg2, sizeof(msg2), 0);
+    read(pipe1[0], &msg2, sizeof(msg2));
+    printf("C(%s)\n", msg2.buffer);
+
+    //Close the neighborSock since we are done with it
+    close(neighborSock);
+
     //Determine the largest ID of the nodes in the ring
     int max = largest(msg2.list, msg2.values);
-
-    //Print the largest ID to the buffer and send the Coordinator message to the other nodes
-    sprintf(msg2.buffer, "%d", max);
-    send(neighborSock, &msg2, sizeof(msg2), 0);
-
-    read(pipe1[0], &msg2, sizeof(msg2));
 
     //Check to make sure there are 6 total processes, if not exit program
     if(msg2.values != (N+1)){
