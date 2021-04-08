@@ -87,6 +87,11 @@ int main(int argc, char const *argv[]){
 
     //Read the Election message coming in from neighboring node
     read(pipe1[0], &msg2, sizeof(msg2));
+
+    //Want to make sure the buffer isn't empty before continuing. If it's empty that means binding failed
+    if(msg2.buffer[0] == '\0'){
+      exit(1);
+    }
     printf("E(%s)\n",msg2.buffer);
 
     //Add this nodes ID to the Election message
@@ -117,8 +122,11 @@ int main(int argc, char const *argv[]){
     printf("C(%s)\n", msg2.buffer);
     send(neighborSock , &msg2 , sizeof(msg) , 0 );
 
-    //This variable contains the ID of the Coordinator
-    int max = atoi(msg2.buffer);
+    //Close the neighborSock since we are done with it
+    close(neighborSock);
+
+    //Determines the largest ID in the Coordinator message
+    int max = largest(msg2.list, msg2.values);
 
     //Check to make sure there are 6 total processes, if not exit program
     if(msg2.values != 6){
