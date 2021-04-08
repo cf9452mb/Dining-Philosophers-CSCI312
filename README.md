@@ -2,11 +2,11 @@
 
 compile firstNode.c: cc -std=c99 firstNode.c -o firstNode
 
-compile node.c     : cc node.c -o node
+compile node.c     : cc -std=c99 node.c -o node
 
-compile coordinator.c:  cc coordinator.c -o coordinator
+compile coordinator.c:  cc -std=c99 coordinator.c -o coordinator
 
-compile diningPhilosophers.c:  cc diningPhilosophers.c -o diningPhilosophers
+compile diningPhilosophers.c:  cc -std=c99 diningPhilosophers.c -o diningPhilosophers
 
 
 Start program by opening up a window and executing ./firstNode
