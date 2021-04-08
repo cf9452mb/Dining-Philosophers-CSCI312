@@ -13,9 +13,9 @@ Start program by opening up a window and executing ./firstNode
 
 Open up 5 more windows and execute ./node
 
-**Note: If you run ./firstNode or ./node and the binding fails, Control+C and re-run the program.
+**Note: If you run ./firstNode or ./node and the binding fails, re-run the program.
         This may happen when running the programs multiple times since the ports may be the same 
-        as the previous program that was ran**
+        as the previous program that was ran or because someone else may be using that specific port**
 
 Connect each program by entering the neighbors port number which will display when each program is ran
 
