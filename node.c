@@ -1,5 +1,4 @@
 //This program is to represent each node in the ring
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -28,8 +27,8 @@ int main(int argc, char const *argv[]){
 
   //Create a pipe for communication between the child and parent
   if(pipe(pipe1) < 0){
-    printf("Error on pipe creation: %d\n", errno);
-    exit(0);
+    printf("Error on pipe creation");
+    exit(EXIT_FAILURE);
   }
 
   pid = fork();
@@ -53,27 +52,39 @@ int main(int argc, char const *argv[]){
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0)
       {
         perror("bind failed");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
     if (listen(server_fd, 3) < 0)
       {
         perror("listen");
-        exit(2);
+        exit(EXIT_FAILURE);
       }
 
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
       {
         perror("accept");
-        exit(3);
+        exit(EXIT_FAILURE);
       }
 
     //Receive the Election message and send to parent so this node's ID can get added to the message
-      recv( new_socket , &msg1, sizeof(msg1), 0);
-      write(pipe1[1], &msg1, sizeof(msg1));
+    if(recv( new_socket , &msg1, sizeof(msg1), 0) < 0){
+      perror("Error on recv");
+      exit(EXIT_FAILURE);
+    }
+    if(write(pipe1[1], &msg1, sizeof(msg1)) < 0){
+      perror("Error on write");
+      exit(EXIT_FAILURE);
+    }
 
       //Receive the Coordinator message
-      recv( new_socket , &msg1, sizeof(msg1), 0);
-      write(pipe1[1], &msg1, sizeof(msg1));
+    if(recv( new_socket , &msg1, sizeof(msg1), 0) < 0){
+      perror("Error on recv");
+      exit(EXIT_FAILURE);
+    }
+    if(write(pipe1[1], &msg1, sizeof(msg1)) < 0){
+      perror("Error on write");
+      exit(EXIT_FAILURE);
+    }
 
       //Close the socket
       close(new_socket);
@@ -86,7 +97,10 @@ int main(int argc, char const *argv[]){
     close(pipe1[1]);
 
     //Read the Election message coming in from neighboring node
-    read(pipe1[0], &msg2, sizeof(msg2));
+    if(read(pipe1[0], &msg2, sizeof(msg2)) < 0){
+      perror("Error on read");
+      exit(EXIT_FAILURE);
+    }
 
     //Want to make sure the buffer isn't empty before continuing. If it's empty that means binding failed
     if(msg2.buffer[0] == '\0'){
@@ -111,16 +125,25 @@ int main(int argc, char const *argv[]){
     if (connect(neighborSock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
       {
         perror("\nConnection Failed \n");
-        exit(4);
+        exit(EXIT_FAILURE);
       }
 
     //Send the Election message to the next node in the ring
-    send(neighborSock , &msg2 , sizeof(msg) , 0 );
+    if(send(neighborSock , &msg2 , sizeof(msg) , 0 ) < 0){
+      perror("Error on send");
+      exit(EXIT_FAILURE);
+    }
 
     //Read the Coordinator message and pass it along to next node in the ring
-    read(pipe1[0], &msg2, sizeof(msg2));
+    if(read(pipe1[0], &msg2, sizeof(msg2)) < 0){
+      perror("Error on read");
+      exit(EXIT_FAILURE);
+    }
     printf("C(%s)\n", msg2.buffer);
-    send(neighborSock , &msg2 , sizeof(msg) , 0 );
+    if(send(neighborSock , &msg2 , sizeof(msg) , 0) < 0){
+      perror("Error on send");
+      exit(EXIT_FAILURE);
+    }
 
     //Close the neighborSock since we are done with it
     close(neighborSock);
@@ -131,7 +154,7 @@ int main(int argc, char const *argv[]){
     //Check to make sure there are 6 total processes, if not exit program
     if(msg2.values != 6){
       printf("invalid number of processes!\n");
-      exit(5);
+      exit(2);
     }
 
     //Fork here and execl either ./diningPhilosophers or ./coordinator program
@@ -151,7 +174,10 @@ int main(int argc, char const *argv[]){
     //Parent process waits for child to complete
     else{
       int returnStatus;
-      waitpid(pid1, &returnStatus, 0);
+      if(waitpid(pid1, &returnStatus, 0) < 0){
+        perror("Error on waitpid");
+        exit(EXIT_FAILURE);
+      }
     }
 
   return 0;
