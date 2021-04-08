@@ -1,33 +1,28 @@
 //This is the program that the coordinator runs. It is used to communicate with each of the 5 Philosophers
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "shared.h"
 
 int main(int argc, char *argv[]){
 
-  int first, second, third, fourth, fifth, sixth, id, port;
+  int nodes[N+1], size, id, port;
 
   //Extract all of the values in the Node ring, this is the order they are in
-  first = atoi(argv[1]);
-  second = atoi(argv[2]);
-  third = atoi(argv[3]);
-  fourth = atoi(argv[4]);
-  fifth = atoi(argv[5]);
-  sixth = atoi(argv[6]);
+  for(int i = 0; i < (N+1); i++){
+    nodes[i] = atoi(argv[i+1]);
+  }
   id = atoi(argv[7]);
   port = atoi(argv[8]);
+
+  size = deleteElement(nodes,(N+1), id);
 
   printf("I am the Coordinator\n");
   printf("My ID is = %d\n", id);
   printf("My port number is = %d\n", port);
   printf("The processes are in this order:\n");
-  printf("%d\n", first);
-  printf("%d\n", second);
-  printf("%d\n", third);
-  printf("%d\n", fourth);
-  printf("%d\n", fifth);
-  printf("%d\n", sixth);
+  for(int i = 0; i < size; i++){
+    printf("%d\n", nodes[i]);
+  }
 
   //Code to create the socket connection to communicate with the Philosophers
   /*
