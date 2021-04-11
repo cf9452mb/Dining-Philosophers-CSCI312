@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
       sprintf(msg.buffer, "REQUEST");
       sendMsg(socketfd, msg);
       msgRec = recMsg(socketfd);
-        if( (strcmp(msgRec.buffer, "OK") == 0) && (msgRec.id == id) ) {
+        if( (strcmp(msgRec.buffer, "OK") == 0)) {
           printf("Philospher %d is eating.\n", id);
           isEating = 1;
           sleep(eatLength);
@@ -54,9 +54,11 @@ int main(int argc, char *argv[]){
     }
     else { //If eating, stop.
       sprintf(msg.buffer, "RELEASE");
+
       sendMsg(socketfd, msg);
       msgRec = recMsg(socketfd);
-        if( (strcmp(msgRec.buffer, "OK") == 0) && (msgRec.id == id) ) {
+      printf("%s", msgRec.buffer);
+        if( (strcmp(msgRec.buffer, "OK") == 0)) {
           printf("Philospher %d is thinking.\n", id);
           isEating = 0;
           sleep(thinkLength);
