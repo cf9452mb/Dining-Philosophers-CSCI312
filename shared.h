@@ -18,9 +18,14 @@ struct message{
   char buffer[1024];
 };
 
+struct queueList{
+  int id;
+  int socketDesc;
+};
+
 //Function to send message
 void sendMsg(int socketfd, struct message m) {
-  char * msg = (char * )&m; //Might have to do this differently, not sure yet. 
+  char * msg = (char * )&m; //Might have to do this differently, not sure yet.
   int s;
   s = send(socketfd, msg, strlen(msg), 0);
   if(s < 0) {
@@ -36,10 +41,10 @@ struct message recMsg(int socketfd) {
   char * buffer[1024];
   struct message msg;
   int readResult = read(socketfd, buffer, 1023);
-    if(readResult < 0) {
-      perror("ERROR: Could not receive.\n");
-      exit(-1);
-    }
+  if(readResult < 0) {
+    perror("ERROR: Could not receive.\n");
+    exit(-1);
+  }
   memcpy(&msg, buffer, sizeof(msg)); //Basically, convert buffer back into a msg.
 
   return msg;
@@ -79,6 +84,29 @@ int deleteElement(int arr[], int n, int x)
       n = n - 1;
       for (int j=i; j<n; j++)
         arr[j] = arr[j+1];
+    }
+
+  return n;
+}
+
+int deleteQueue(struct queueList arr[], int n, int x)
+{
+  // Search x in array
+  int i;
+  for (i=0; i<n; i++)
+    if (arr[i].id == x)
+      break;
+
+  // If x found in array
+  if (i < n)
+    {
+      // reduce size of array and move all
+      // elements on space ahead
+      n = n - 1;
+      for (int j=i; j<n; j++){
+        arr[j].id = arr[j+1].id;
+        arr[j].socketDesc = arr[j+1].socketDesc;
+      }
     }
 
   return n;
