@@ -25,9 +25,9 @@ struct queueList{
 
 //Function to send message
 void sendMsg(int socketfd, struct message m) {
-  char * msg = (char * )&m; //Might have to do this differently, not sure yet.
+  //char * msg = (char * )&m; //Might have to do this differently, not sure yet. 
   int s;
-  s = send(socketfd, msg, strlen(msg), 0);
+  s = send(socketfd, &m, sizeof(m), 0);
   if(s < 0) {
     perror("ERROR: Message failed to send.\n");
     exit(-1);
@@ -38,14 +38,14 @@ void sendMsg(int socketfd, struct message m) {
 
 //Function to recieve message
 struct message recMsg(int socketfd) {
-  char * buffer[1024];
+  //char * buffer[1024];
   struct message msg;
-  int readResult = read(socketfd, buffer, 1023);
-  if(readResult < 0) {
-    perror("ERROR: Could not receive.\n");
-    exit(-1);
-  }
-  memcpy(&msg, buffer, sizeof(msg)); //Basically, convert buffer back into a msg.
+  int readResult = read(socketfd, &msg, sizeof(msg));
+    if(readResult < 0) {
+      perror("ERROR: Could not receive.\n");
+      exit(-1);
+    }
+  //memcpy(&msg, buffer, sizeof(msg)); //Basically, convert buffer back into a msg.
 
   return msg;
 }
