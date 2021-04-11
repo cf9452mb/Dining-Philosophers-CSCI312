@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
               valread = read( sd , &msg, sizeof(msg));
 
               if(strcmp(msg.buffer, "REQUEST") == 0){
-                printf("Requesting CS\n");
+                printf("%d is requesting CS\n", msg.id);
                 int spot;
                 for(int i = 0; i < N; i++){
                   if(nodes[i] == msg.id){
@@ -137,6 +137,7 @@ int main(int argc, char *argv[]){
                 }
                 if(chopsticksTaken[spot] == false && chopsticksTaken[((spot+4)%5)] == false){
                   strcpy(msg.buffer, "OK");
+                  printf("Sending OK to %d\n", msg.id);
                   send(sd, &msg, sizeof(msg), 0);
                   chopsticksTaken[spot] = true;
                   chopsticksTaken[((spot+4)%5)] = true;
@@ -152,7 +153,7 @@ int main(int argc, char *argv[]){
               }
 
               else if(strcmp(msg.buffer, "RELEASE") == 0){
-                printf("Releasing CS\n");
+                printf("Releasing CS from %d\n", msg.id);
                 int remove = 4, spot;
                 for(int i = 0; i < N; i++){
                   if(nodes[i] == msg.id){
@@ -172,6 +173,7 @@ int main(int argc, char *argv[]){
                   }
                   if(chopsticksTaken[spot1] == false && chopsticksTaken[((spot1+4)%5)] == false){
                     strcpy(msg.buffer, "OK");
+                    printf("Sending OK to %d\n", msg.id);
                     send(queue[i].socketDesc, &msg, sizeof(msg), 0);
                     chopsticksTaken[spot1] = true;
                     chopsticksTaken[((spot1+4)%5)] = true;
