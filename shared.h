@@ -18,6 +18,33 @@ struct message{
   char buffer[1024];
 };
 
+//Function to send message
+void sendMsg(int socketfd, struct message m) {
+  char * msg = (char * )&m; //Might have to do this differently, not sure yet. 
+  int s;
+  s = send(socketfd, msg, strlen(msg), 0);
+  if(s < 0) {
+    perror("ERROR: Message failed to send.\n");
+    exit(-1);
+  }
+  return;
+}
+
+
+//Function to recieve message
+struct message recMsg(int socketfd) {
+  char * buffer[1024];
+  struct message msg;
+  int readResult = read(socketfd, buffer, 1023);
+    if(readResult < 0) {
+      perror("ERROR: Could not receive.\n");
+      exit(-1);
+    }
+  memcpy(&msg, buffer, sizeof(msg)); //Basically, convert buffer back into a msg.
+
+  return msg;
+}
+
 //Find largest element in an array
 int largest(int arr[], int size){
 
