@@ -12,10 +12,12 @@ int main(int argc, char *argv[]){
   struct message msg;
   struct message msgRec;
   struct sockaddr_in servaddr;
+  memset(&servaddr, 0, sizeof(servaddr));
 
   id = atoi(argv[1]);
     msg.id = id;
   coordPort = atoi(argv[2]);
+  servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(coordPort);
 
   srand(time(0));
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]){
   //Connect here to the Coordinators socket using the port number in coordPort
   int socketfd = createSocket();
   if( connect(socketfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
-    printf("ERROR: Philospher %d failed to connect.\n", id);
+    perror("ERROR: Philospher failed to connect.\n");
     return -1;
   }
 
