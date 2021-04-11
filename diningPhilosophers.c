@@ -17,8 +17,11 @@ int main(int argc, char *argv[]){
   id = atoi(argv[1]);
     msg.id = id;
   coordPort = atoi(argv[2]);
+  
+  memset(&servaddr, 0, sizeof(servaddr));
   servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(coordPort);
+  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  servaddr.sin_port = htons(coordPort);
 
   srand(time(0));
   eatLength = (rand()%5) + 1;
