@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]){
 
-  int nodes[N+1], client_sockets[5], new_socket, valread, size, id, port, max_sd, sd;
+  int nodes[N+1], client_sockets[5], new_socket, size, id, port, max_sd, sd;
   bool chopsticksTaken[5] = {false, false, false, false, false};
   struct sockaddr_in address;
   struct queueList queue[5];
@@ -125,7 +125,10 @@ int main(int argc, char *argv[]){
               struct message msg;
 
               //Read the incoming message and determine which type of message it is
-              valread = read( sd , &msg, sizeof(msg));
+              if(read( sd , &msg, sizeof(msg)) < 0){
+                perror("Error on read\n");
+                exit(EXIT_FAILURE);
+              }
 
               if(strcmp(msg.buffer, "REQUEST") == 0){
                 printf("%d is requesting CS\n", msg.id);
@@ -141,7 +144,10 @@ int main(int argc, char *argv[]){
                 if(chopsticksTaken[spot] == false && chopsticksTaken[((spot+4)%5)] == false){
                   strcpy(msg.buffer, "OK");
                   printf("Sending OK to %d\n", msg.id);
-                  send(sd, &msg, sizeof(msg), 0);
+                  if(send(sd, &msg, sizeof(msg), 0) < 0){
+                    perror("Error on send\n");
+                    exit(EXIT_FAILURE);
+                  }
                   chopsticksTaken[spot] = true;
                   chopsticksTaken[((spot+4)%5)] = true;
                 }
@@ -182,7 +188,10 @@ int main(int argc, char *argv[]){
                     printf("Sending OK to %d\n", queue[i].id);
                     chopsticksTaken[spot1] = true;
                     chopsticksTaken[((spot1+4)%5)] = true;
-                    send(queue[i].socketDesc, &sendMsg, sizeof(sendMsg), 0);
+                    if(send(queue[i].socketDesc, &sendMsg, sizeof(sendMsg), 0) < 0){
+                      perror("Error on send\n");
+                      exit(EXIT_FAILURE);
+                    }
                     remove = spot1;
                   }
                 }
