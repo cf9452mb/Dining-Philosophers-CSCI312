@@ -130,12 +130,14 @@ int main(int argc, char *argv[]){
               if(strcmp(msg.buffer, "REQUEST") == 0){
                 printf("%d is requesting CS\n", msg.id);
                 int spot;
+                //Need the spot in the nodes array for checking the chopsticks
                 for(int i = 0; i < N; i++){
                   if(nodes[i] == msg.id){
                     spot = i;
                     break;
                   }
                 }
+                //If the C.S. is open
                 if(chopsticksTaken[spot] == false && chopsticksTaken[((spot+4)%5)] == false){
                   strcpy(msg.buffer, "OK");
                   printf("Sending OK to %d\n", msg.id);
@@ -157,6 +159,7 @@ int main(int argc, char *argv[]){
                 struct message sendMsg;
                 printf("Releasing CS from %d\n", msg.id);
                 int remove = 10, spot;
+                //Need the spot in the nodes array for setting the chopsticks
                 for(int i = 0; i < N; i++){
                   if(nodes[i] == msg.id){
                     spot = i;
@@ -165,6 +168,7 @@ int main(int argc, char *argv[]){
                 }
                 chopsticksTaken[spot] = false;
                 chopsticksTaken[((spot+4)%5)] = false;
+                //Go through the queue and check if a process can now enter the C.S.
                 for(int i = 0; i < entries; i++){
                   int spot1;
                   for(int j = 0; j < N; j++){
