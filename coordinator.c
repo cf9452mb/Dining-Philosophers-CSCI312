@@ -11,8 +11,7 @@ int main(int argc, char *argv[]){
   int nodes[N+1], client_sockets[5], new_socket, valread, size, id, port, max_sd, sd;
   bool chopsticksTaken[5] = {false, false, false, false, false};
   struct sockaddr_in address;
-  struct message msg;
-  struct queueList queue[3];
+  struct queueList queue[5];
   int addrlen = sizeof(address);
   fd_set readfds;
   int entries = 0;
@@ -123,6 +122,8 @@ int main(int argc, char *argv[]){
 
           if (FD_ISSET( sd , &readfds))
             {
+              struct message msg;
+
               //Read the incoming message and determine which type of message it is
               valread = read( sd , &msg, sizeof(msg));
 
@@ -153,8 +154,9 @@ int main(int argc, char *argv[]){
               }
 
               else if(strcmp(msg.buffer, "RELEASE") == 0){
+                struct message sendMsg;
                 printf("Releasing CS from %d\n", msg.id);
-                int remove = 4, spot;
+                int remove = 10, spot;
                 for(int i = 0; i < N; i++){
                   if(nodes[i] == msg.id){
                     spot = i;
@@ -172,23 +174,22 @@ int main(int argc, char *argv[]){
                     }
                   }
                   if(chopsticksTaken[spot1] == false && chopsticksTaken[((spot1+4)%5)] == false){
-                    strcpy(msg.buffer, "OK");
-                    printf("Sending OK to %d\n", msg.id);
-                    send(queue[i].socketDesc, &msg, sizeof(msg), 0);
+                    strcpy(sendMsg.buffer, "OK");
+                    printf("Sending OK to %d\n", queue[i].id);
                     chopsticksTaken[spot1] = true;
                     chopsticksTaken[((spot1+4)%5)] = true;
+                    send(queue[i].socketDesc, &sendMsg, sizeof(sendMsg), 0);
                     remove = spot1;
                   }
                 }
                 //Delete element from Queue if needed and take 1 off entries
-                if(remove != 4){
+                if(remove != 10){
                   int size = deleteQueue(queue, entries, nodes[remove]);
                   entries--;
                 }
               }
               else{
                 printf("default\n");
-                printf("Buffer = %s\n", msg.buffer);
               }
 
 
