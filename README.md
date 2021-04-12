@@ -20,3 +20,5 @@ Open up 5 more windows and execute ./node
 Connect each program by entering the neighbors port number which will display when each program is ran
 
 **Note: Make sure to have 6 total processes, otherwise error message will print and program(s) exit**
+
+**Note: When closing the program(s), Ctrl+C the Coordinator program first and the rest will close**
