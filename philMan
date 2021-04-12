@@ -1,0 +1,26 @@
+.TH man 8 "12 April 2021" "1.0" "Philospher's problem man page"
+.SH NAME
+    The Dining Philospher's Problem - Solves the Dining Philospher's problem with the centralized algorithm.
+.SH COMPILATION
+    To compile, run the following commands.
+	cc -std=c99 firstNode.c -o firstNode
+	cc -std=c99 node.c -o node
+	cc -std=c99 coordinator.c -o coordinator
+	cc -std=c99 diningPhilosophers.c -o diningPhilosophers
+.SH DESCRIPTION
+    This program uses the centralized algorithm & ring election algorithm to solve the Dining Philospher's problem. Each philospher is a seperate process, and a node. There are 6 nodes. One is the coordinator, the rest are Philosophers.
+    When a Philospher is initialized, they will generate a random wait and think time, adding some variation. They will request to use chopsticks from the coordinator node, and then begin eating when they recieve an OK, taking up both chopsticks.
+    When a Philospher is done eating, they will send a release notifaction back to the coordinator node, and then the chopsticks will be released, giving the Philospher time to think while others can eat.
+.SH EXECUTION
+    ./firstNode (For first nodes)
+    ./node		(Start the rest like this)
+    When all nodes are started, type the port number of any of the other nodes in the first node. Then, do the same with the selected node, and keep going until it connects back to the first node.
+    When you wish to exit the program, use CTRL-C in the coordinator node. The rest of the nodes will exit automatically. 
+.SH BUGS
+    Sometimes a node will fail to start due to conflicting ports or other issues. Simply restart the node if this happens.
+.SH AUTHOR
+    Jordan Hebler
+    Skylar Wolf
+    Naomie Bambara
+    Abhishek Adhikari
+    Sabrina Storms
