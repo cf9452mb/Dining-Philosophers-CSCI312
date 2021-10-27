@@ -1,5 +1,7 @@
 # Project5
 
+The objective of this program is to implement distributed algorithms and use them to solve a specified synchronization problem. In this case we are solving the Dining Philosophers Problem using the centralized algorithm.
+
 compile firstNode.c: cc -std=c99 firstNode.c -o firstNode
 
 compile node.c     : cc -std=c99 node.c -o node
